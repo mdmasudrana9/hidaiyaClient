@@ -23,8 +23,7 @@ export const Button: React.FC<ButtonProps> = ({
 
   // Styling for button variants
   const variantStyles: Record<string, string> = {
-    default:
-      "bg-green-700 text-white hover:bg-green-800 focus:ring-green-500",
+    default: "bg-green-700 text-white hover:bg-green-800 focus:ring-green-500",
     outline:
       "border border-green-700 text-green-700 hover:bg-green-100 focus:ring-green-500",
   };
