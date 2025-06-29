@@ -33,6 +33,9 @@ import ReciverDashboard from "./pages/dashboard/ReciverDashboard";
 import AuthLayout from "./components/layout/AuthLayout";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import DonorDashboard from "./pages/dashboard/DonorDashboard";
+import DonateHistory from "./pages/dashboard/donate/DonateHistory";
+import DonationSuccess from "./pages/dashboard/donate/DonationSuccess";
+import VerifyEmail from "./pages/VerifyEmail";
 
 function App() {
   const { direction } = useDirection();
@@ -59,6 +62,7 @@ function App() {
       className={`font-bengali min-h-screen ${direction === "rtl" ? "rtl" : "ltr"}`}
     >
       <Routes>
+        <Route path="/verify-email/:token" element={<VerifyEmail />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="/quran" element={<QuranPage />} />
@@ -89,6 +93,8 @@ function App() {
           <Route path="zakatDonor" element={<DonorDashboard />} />
           <Route path="zakatReciver" element={<ReciverDashboard />} />
           <Route path="donate" element={<DonatePage />} />
+          <Route path="donatehistry" element={<DonateHistory />} />
+          <Route path="donation-success" element={<DonationSuccess />} />
         </Route>
       </Routes>
       <MobileNavigation />

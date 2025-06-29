@@ -1,20 +1,23 @@
-// src/features/auth/Donate.tsx
-import AppForm from "../../../components/form/AppForm";
 import AppButton from "../../../components/form/ui/AppButton";
 
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import AppForm from "../../../components/form/AppForm";
 import AppFormInput from "../../../components/form/ui/AppFormInput ";
 import AppFormTextarea from "../../../components/form/ui/AppFormTextarea";
 import AppFormSelect from "../../../components/form/ui/AppformSelect";
 import { useGetmeQuery } from "../../../redux/features/auth/authApi";
-
-//import { useCreateDonorMutation } from "../../../redux/features/donor/Donate.api";
+import {
+  useAddDonateMutation,
+  useInitPaymentMutation,
+} from "../../../redux/features/donate/DonateApi";
 
 interface DonorFormData {
-  name: string;
-  gender: "male" | "female" | "other";
-  email: string;
-  password: string;
+  message: string;
+  method: "Bank Transfer" | "Other" | "Cash" | "Nagad" | "Rocket" | "bKash";
+  date: string;
+  amount: string;
+  donorId?: string;
 }
 
 const medthodOption = [
@@ -26,67 +29,83 @@ const medthodOption = [
   { value: "Other", label: "Other" },
 ];
 
+const DonateForm = () => {
+  const { data: getme } = useGetmeQuery("");
+
+  // useEffect(() => {
+  //   if (getme?.data?.name) {
+  //     setValue("donorId", getme.data.donorId);
+  //   }
+  // }, [getme, setValue]);
+
+  const userData = getme?.data;
+  console.log("userData :>> ", userData);
+
+  const userOption =
+    userData?.id && userData?.name
+      ? [{ value: userData._id, label: userData.name }]
+      : [];
+
+  return (
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <AppFormInput name="amount" label="Amount" type="number" required />
+        <AppFormInput name="date" label="Date" required />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <AppFormSelect
+          options={medthodOption}
+          name="method"
+          label="Method"
+          required
+        />
+        <AppFormSelect
+          options={userOption}
+          name="donorId"
+          label="User"
+          required
+        />
+      </div>
+
+      <AppFormTextarea name="message" label="Message" />
+      <AppButton type="submit" label="Donate Now" className="mt-4 w-full" />
+    </>
+  );
+};
+
 const Donate = () => {
-  //const [createDonor] = useCreateDonorMutation();
-  const { data: getme } = useGetmeQuery("zakatDonor");
-  console.log("getme :>> ", getme);
   const navigate = useNavigate();
+  const [initPayment] = useInitPaymentMutation();
 
-  const onSubmit = (data: DonorFormData) => {
-    console.log("Form submitted with data:", data);
-    //const toastId = toast.loading("Cerating...");
-    // Map to your backend payload
-    const payload = {
-      password: data.password,
-      donor: {
-        name: data.name,
-        gender: data.gender,
-        email: data.email,
-      },
-    };
+  const onSubmit = async (data: DonorFormData) => {
+    try {
+      const payload = {
+        ...data,
+      };
 
-    // Replace this with your API call
-    // apiService.createDonor(payload).then(...).catch(...)
-    console.log("Backend payload:", payload);
-    //createDonor(payload)
-    //   .unwrap()
-    //   .then((response) => {
-    //     //console.log("Donate created successfully:", response);
-    //     toast.success("Donate registered successfully!");
-    //     navigate("/auth/login");
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error creating donor:", error);
-    //     toast.error("Failed to register donor. Please try again.", {
-    //       //id: toastId,
-    //       duration: 2000,
-    //     });
+      const res: any = await initPayment(payload).unwrap();
+      console.log("Payment init response:", res);
 
-    //     // Handle error (e.g., show a toast notification)
-    //   });
+      if (res?.url) {
+        window.location.href = res.url;
+      } else {
+        toast.error("Failed to initiate payment.");
+      }
+    } catch (error) {
+      console.error("Payment init failed:", error);
+      toast.error("Something went wrong.");
+    }
   };
 
   return (
-    <div className="w-full flex items-center justify-center ">
+    <div className="w-full flex items-center justify-center">
       <div className="rounded-xl bg-[#1F2937] shadow-md overflow-hidden p-3 sm:p-8 max-w-md w-full">
         <h2 className="text-2xl text-red font-semibold mb-6 text-center">
           Donate Here
         </h2>
         <AppForm onSubmit={onSubmit}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <AppFormInput name="amount" label="Amount" type="number" required />
-            <AppFormInput name="date" label="Date" required />
-          </div>
-
-          <AppFormSelect
-            options={medthodOption}
-            name="method"
-            label="Method"
-            required
-          />
-          <AppFormTextarea name="message" label="Message" />
-
-          <AppButton type="submit" label="Donate Now" className="mt-4 w-full" />
+          <DonateForm />
         </AppForm>
       </div>
     </div>

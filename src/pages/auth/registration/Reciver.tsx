@@ -38,7 +38,7 @@ const Reciver = () => {
       .unwrap()
       .then((response) => {
         //console.log("Donor created successfully:", response);
-        toast.success("Donor registered successfully!");
+        toast.success("Reciver registered successfully!");
         navigate("/auth/login");
       })
       .catch((error) => {

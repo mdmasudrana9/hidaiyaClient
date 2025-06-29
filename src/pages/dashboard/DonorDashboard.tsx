@@ -8,11 +8,22 @@ import {
   User,
   Users,
 } from "lucide-react";
-import { useAppSelector } from "../../redux/hooks";
-import { selectToken, TUser } from "../../redux/features/auth/authSlice";
-import { verifyToken } from "../../utils/verifyToken";
+import { useGetmeQuery } from "../../redux/features/auth/authApi";
+import { useGetAllDonateQuery } from "../../redux/features/donate/DonateApi";
+import { NavLink } from "react-router-dom";
 
 export default function DonorDashboard() {
+  const { data, isLoading } = useGetAllDonateQuery("");
+  const total = data?.data || [];
+
+  const totalDonations = total.reduce(
+    (sum: number, donation: { amount: number }) => sum + donation.amount,
+    0
+  );
+
+  console.log("Total Donations:", totalDonations);
+
+  console.log("data :>> ", data);
   const donations = [
     {
       date: "01/15/2024",
@@ -54,9 +65,10 @@ export default function DonorDashboard() {
     },
   ];
 
-  const token = useAppSelector(selectToken);
+  // const token = useAppSelector(selectToken);
 
-  const user = token ? (verifyToken(token) as unknown as TUser) : null;
+  // const user = token ? (verifyToken(token) as unknown as TUser) : null;
+  const { data: getme } = useGetmeQuery("");
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -93,13 +105,15 @@ export default function DonorDashboard() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Welcome back, ${user?.userEmail}!
+              Welcome back,{getme?.data?.name}!
             </h2>
             <p className="text-gray-600">Here's your donation overview</p>
           </div>
           <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2">
             <span className="text-lg">+</span>
-            <span>Give Zakat Now</span>
+            <span>
+              <NavLink to="/dashboard/donate">Give Zakat Now</NavLink>
+            </span>
           </button>
         </div>
 
@@ -112,7 +126,9 @@ export default function DonorDashboard() {
                 <span className="text-gray-600">$</span>
               </div>
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-2">$4,500</div>
+            <div className="text-3xl font-bold text-gray-900 mb-2">
+              ${totalDonations}
+            </div>
             <div className="flex items-center text-sm text-green-600">
               <TrendingUp className="w-4 h-4 mr-1" />
               <span>+12% from last month</span>

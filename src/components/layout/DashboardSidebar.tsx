@@ -7,7 +7,7 @@ import {
   User,
   X,
 } from "lucide-react";
-import React, { Profiler } from "react";
+import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   logout,
@@ -49,7 +49,11 @@ const DashboardSidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       path: "/dashboard/donate",
       icon: <HeartHandshake size={20} />,
     },
-    { name: "ইতিহাস", path: "/histroy", icon: <Timer size={20} /> },
+    {
+      name: "ইতিহাস",
+      path: "/dashboard/donatehistry",
+      icon: <Timer size={20} />,
+    },
     { name: "গ্রহক", path: "/recivers", icon: <User size={20} /> },
     { name: "যোগাযোগ", path: "/contact", icon: <MessageCircle size={20} /> },
     //{ name: "Login", path: "/auth/login", icon: <LogIn size={20} /> },
@@ -58,7 +62,7 @@ const DashboardSidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { name: "হোম", path: "/", icon: <BookOpen size={20} /> },
     {
       name: "রিসিভার ড্যাশবোর্ড",
-      path: "/dashboard/reciver",
+      path: "/dashboard/zakatReciver",
       icon: <BookOpen size={20} />,
     },
     { name: "গ্রহন করুন", path: "/recive", icon: <HeartHandshake size={20} /> },
