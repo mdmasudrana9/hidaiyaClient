@@ -46,7 +46,7 @@ Built using modern full-stack technologies, Hidaya delivers both functionality a
 
  1. Clone & Install
 
-git clone https://github.com/talukder-rakib/hidaya.git
+git clone https://github.com/mdmasudrana9/hidaya.git
 
 cd hidaya
 
